@@ -39,12 +39,12 @@ def main() -> None:
 
     empresas_df = read_empresas(spark, args.empresas_path).repartition("cnpj_basico").cache()
     estabelecimentos_df = read_estabelecimentos(spark, args.estabelecimentos_path)
-    socios_df = read_socios(spark, args.socios_path).repartition("cnpj_basico")
+    socios_df = read_socios(spark, args.socios_path).repartition("cnpj_basico").cache()
 
-    empresas_filtradas_df = filter_establishments_by_cnae(estabelecimentos_df, cnaes_validos_df)
+    estabelecimentos_filtrados_df = filter_establishments_by_cnae(estabelecimentos_df, cnaes_validos_df)
 
     final_df = (
-        build_final_dataset(empresas_df, empresas_filtradas_df, socios_df)
+        build_final_dataset(empresas_df, estabelecimentos_filtrados_df, socios_df)
         .repartition(args.output_partitions, "cnpj")
         .cache()
     )
@@ -55,6 +55,10 @@ def main() -> None:
     else:
         writer.parquet(args.output_path)
 
+    final_df.unpersist()
+    socios_df.unpersist()
+    empresas_df.unpersist()
+    cnaes_validos_df.unpersist()
     spark.stop()
 
 

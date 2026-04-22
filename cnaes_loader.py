@@ -38,14 +38,14 @@ def _filter_eligible_rows(rows: Iterable[dict]) -> list[dict]:
 def load_eligible_cnaes(spark: SparkSession, excel_path: str) -> DataFrame:
     xlsx = pd.read_excel(excel_path, dtype=str)
     if xlsx.shape[1] < 3:
-        raise ValueError("O arquivo Excel deve possuir ao menos 3 colunas: CNAE, descrição e indicador.")
+        raise ValueError("The Excel file must have at least 3 columns: CNAE, description, and indicator.")
 
     normalized = xlsx.iloc[:, :3].copy()
     normalized.columns = ["cnae_subclasse", "descricao_cnae", "indicador_obrigacao"]
     eligible_rows = _filter_eligible_rows(normalized.to_dict(orient="records"))
 
     if not eligible_rows:
-        raise ValueError("Nenhum CNAE elegível encontrado no Excel (valores esperados: Sim ou Passível de obrigação).")
+        raise ValueError("No eligible CNAE found in Excel (expected values: Sim or Passível de obrigação).")
 
     cnaes_df = spark.createDataFrame(eligible_rows)
     return (

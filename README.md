@@ -82,7 +82,13 @@ Pré-requisitos:
 
 - Python 3.10+
 - Spark 3.x
-- Dependências Python: `pyspark`, `pandas`, `openpyxl`
+- Dependências Python em `requirements.txt`
+
+Instalação:
+
+```bash
+pip install -r requirements.txt
+```
 
 Exemplo:
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pyspark import StorageLevel
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
@@ -17,7 +16,6 @@ def filter_establishments_by_cnae(estabelecimentos_df: DataFrame, cnaes_validos_
             ),
         )
         .repartition("cnpj_basico")
-        .persist(StorageLevel.MEMORY_AND_DISK)
     )
 
     principal_matches = (
